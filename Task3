@@ -1,0 +1,93 @@
+
+import java.io.*;  
+ import java.net.*;
+public class Client implements Runnable { 
+private Socket socket ;
+ private BufferedReader in ;
+private PrintWriter out ; 
+private String serverAddress ;
+ private int serverPort ;
+public Client (String serverAddress, int serverPort) { 
+this.serverAddress = serverAddress;
+ this.serverPort = server Port ;
+}
+public void run ()   {
+try   {    
+connectToServer();
+ sendRequest();
+receiveResponse();
+{
+} catch (IOException e)
+e.pritStackTrace() ;
+} finally {
+closeConnection();
+}
+}
+private void connectToServer() throws IOException 
+// Create a new socket connection to the server
+socket = new Socket (serverAddress, serverPort);
+ in = new BufferedReader(new InputStreamReader (socket.getInputStream())); 
+out = new PrintWriter(socket.getOutputStream(), true);
+}
+private void sendRequest() throws IOException { 
+Get input from the user for beverage code and number of cups dispensed
+BufferedReader userInput  = new BufferedReader(new InputStreamReader (System.in));
+
+System.out.print("Enter beverage Code:");
+String beverageCode = userInput.readLine();
+System.out.print ("Enter number of cups dispensed: "); 
+String cupsDispensed = userInput.readLine();
+
+// Validate input 
+if (!isValid Input (beverageCode, cups Dispensed)) { 
+System.out.println("Invalid input.");
+     return;
+}
+ // Format request and send to server String request = "BEVERAGE + beverageCode +" " + cupsDispensed;
+out.println(request);
+}
+private boolean isValid Input (String beverageCode, String cups Dispensed) {
+ // Check that beverage code is a positive integer 
+     try  { 
+
+int code =    
+Integer.parseInt(beverageCode); 
+if (code <= 0)  { 
+
+return false;
+}
+catch (NumberFormatException e) {
+ return false;
+}
+// Check that cups dispensed is a positive integer
+  try { 
+
+int cups = Integer.parseInt(cupsDispensed); 
+if (cups <= 0) {
+ return false;
+}
+} catch (NumberFormatException e)   }
+return false;    
+}
+return true;
+}
+private void receiveResponse() throws IOException {
+ 
+// Read response from server and display
+String response = in.readLine(); 
+System.out.println("Server response:" + response); 
+} 
+private void closeConnection () { 
+
+// Close connection to the server try 
+ socket.close();
+} catch (IOException e) {
+ e.printStackTrace ();
+}
+}
+public static void main(String args[]) { 
+Client client = new Client("localhost", 1234);
+Thread t = new Thread(client);
+ t.start();
+}
+}

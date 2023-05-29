@@ -1,0 +1,20 @@
+
+CREATE DATABASE beverages_db;
+USE beverages_db;
+CREATE TABLE beverages ( 
+beverage_code INT (10) NOT  NULL
+AUTO_INCREMENT, 
+beverage_name VARCHAR(50) NOT NULL, 
+price DECIMAL(10 , 2) NOT NULL,
+ PRIMARY KEY (beverage_code)
+)
+INSERT INTO beverages (beverage_name, price)
+ VALUES ('Coca-Cola' ,  1.50);
+INSERT INTO beverages (beverage_name, price)
+VALUES ('Pepsi', 1.50);
+INSERT INTO beverages (beverage_name, price)
+VALUES ('Mountain Dew' ,  2.00);
+INSERT INTO beverages (beverage_name, price)
+VALUES ('Dr. Pepper' ,  2.50);
+INSERT INTO beverages (beverage_name, price)
+VALUES ('Sprite' ,  1.25)

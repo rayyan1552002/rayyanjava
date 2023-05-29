@@ -1,0 +1,96 @@
+
+import java.io.*;
+import java.net.*; 
+import java.sql.*;
+
+public class Server implements Runnable  { 
+private ServerSocket serverSocket; private Socket clientSocket;
+private Connection dbConnection; private BufferedReader in;
+private PrintWriter out;
+public Server (int port)  {
+   try  { 
+
+serverSocket = new
+ServerSocket (port);
+connectToDatabase();
+} catch (IOException e)  }
+ e.printStackTrace ();
+}
+}
+public void run()  {
+    try { 
+acceptClientConnection(); 
+handleClientRequest();
+} catch (IOException | SQLException e 
+e.printStackTrace();
+} finally {
+closeConnection();
+}
+}
+private void connectToDatabase()    throws SQLException {  
+// Create a connection to the database String url=
+jdbc:mysql://localhost:3306/beverages_db"; "
+String username = "root"
+String password = ""; 
+dbConnection= 
+DriverManager.getConnection (url, username, password);
+}
+private void acceptClientConnection() throws IOException {
+ // Wait for a client to connect System.out.println("Waiting for client
+connection…");                                    
+clientSocket = serverSocket.accept(); 
+System.out.println("Client connected.");
+Set up input and output streams in = new BufferedReader(new //
+InputStreamReader (clientSocket.getInputStream());
+out = new
+PrintWriter(clientSocket.getOutputStream(), 
+true);
+}
+private void handleClientRequest() throws
+IOException, SQLException { 
+// Read request from client
+ String[] requestParts = 
+in.readLine().split("\\s+");
+ int beverageCode= 
+Integer.parseInt(request Parts [1]);
+int cupsDispensed = 
+Integer.parseInt(request Parts [2]);
+
+// Retrieve beverage name and price from database 
+String query = "SELECT beverage_name,
+ price FROM beverages WHERE beverage_code = ?"; 
+PreparedStatement preparedStatement = dbConnection.prepareStatement (query); preparedStatement.setInt(1, beverageCode); 
+ResultSet resultSet = preparedStatement.executeQuery();
+
+if (!resultSet.next()) {
+ out.println("Invalid beverage code."); 
+return;
+}
+String beverageName= resultset.getString("beverage_name"); 
+double price = resultSet.getDouble ("price")
+
+Calculate sales return and send response to client   //
+ double sales Return price * cupsDispensed; 
+String response = "BEVERAGE" + beverageCode +" "+ beverageName +" "+ salesRetun;
+out.println(response);
+}
+private void closeConnection() {
+ // Close connection to client and database
+              try  {     
+
+in.close();
+ out.close(); 
+clientSocket.close(); 
+dbConnection.close();
+}
+} catch (IOException SQLException e)
+e.printStackTrace ();
+}
+}
+public static void main(String[] args)
+ Server server = new Server (1234);
+ Thread t = new Thread (server); 
+   t.start ();
+
+}
+}
